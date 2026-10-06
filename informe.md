@@ -7,7 +7,7 @@
 | Volumen | Se refiere a la cantidad de datos generados por los sensores. | El CSV contiene 100,000 mediciones. Si se agregan miles de sensores, la cantidad aumentará considerablemente. | Actual y futura ampliación |
 | Velocidad | Se relaciona con la rapidez con la que se generan y reciben los datos. | Actualmente los sensores registran una medición por minuto. En la ampliación se recibirían mediciones cada segundo. | Actual y futura ampliación |
 | Variedad | Se refiere a los diferentes tipos y formatos de información. | Actualmente el CSV contiene datos como temperatura y vibración. En el futuro también se agregarían fotografías y reportes de mantenimiento. | CSV actual y futura ampliación |
-| Veracidad | Se relaciona con la calidad y confiabilidad de las mediciones. | Una lectura anormal podría deberse a un problema del sensor y tendría que validarse antes de tomar una decisión. | Aplicable al sistema de sensores |
+| Veracidad | Se relaciona con la calidad y confiabilidad de las mediciones. | Una lectura anormal podría deberse a un problema del sensor y tendría que validarse antes de tomar una decisión. | CSV actual |
 | Valor | Consiste en obtener información útil de los datos. | Detectar temperaturas mayores que 85 °C permite identificar lecturas que requieren atención. | CSV actual |
 
 ## 6. Tipos de datos y procesamiento tradicional
@@ -38,28 +38,43 @@ La elección depende del tiempo requerido: las alertas necesitan una respuesta r
 
 ### Escenario A - Arquitectura Lambda
 
-Utilizaría arquitectura Lambda porque el escenario solicita dos rutas: una para recalcular el historial por lotes y otra para procesar rápidamente las mediciones recientes.
+Utilizaría arquitectura Lambda porque se necesitan dos formas de procesamiento: una para analizar todo el historial por lotes y otra para atender rápidamente las mediciones nuevas.
 
 Diagrama:
 
-Sensores -> Almacenamiento histórico -> Procesamiento Batch -> Resultados históricos
-
-Sensores -> Procesamiento en tiempo real -> Resultados recientes
-
-Resultados históricos + Resultados recientes -> Consulta final
+[ Sensores ]
+     |
+     +----> [ Procesamiento Batch ] ----> [ Resultados históricos ]
+     |
+     +----> [ Procesamiento en tiempo real ] ----> [ Resultados recientes ]
+                                                        |
+                                                        v
+                                                [ Consulta final ]
 
 ### Escenario B - Arquitectura Kappa
 
-Utilizaría arquitectura Kappa porque se busca una sola lógica de procesamiento de eventos. Las mediciones pueden almacenarse como eventos y volver a procesarse cuando sea necesario.
+Utilizaría arquitectura Kappa porque se busca mantener una sola lógica de procesamiento. Los eventos se almacenan y pueden volver a procesarse cuando sea necesario.
 
 Diagrama:
 
-Sensores -> Flujo de eventos -> Almacenamiento de eventos -> Procesamiento -> Resultados
+[ Sensores ]
+     |
+     v
+[ Flujo de eventos ]
+     |
+     v
+[ Almacenamiento de eventos ]
+     |
+     v
+[ Procesamiento ]
+     |
+     v
+[ Resultados ]
+     ^
+     |
+[ Reprocesamiento ]
 
-                                      |
-                                      -> Reprocesamiento
-
-Kappa evita mantener dos lógicas de procesamiento diferentes y permite volver a procesar los eventos almacenados.
+Kappa evita mantener dos lógicas diferentes y permite volver a procesar los eventos almacenados.
 
 ## 9. Analítica descriptiva, predictiva y prescriptiva
 

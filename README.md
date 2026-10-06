@@ -21,52 +21,61 @@ Los datos utilizados en este proyecto son simulados.
 
 ## Estructura
 
-text
+```text
 analisis-sensores-industriales/
 ├── data/
 │   └── sensores_industriales.csv
 ├── resultados/
 │   └── alertas.csv
 ├── evidencias/
+│   └── reproducibilidad.png
 ├── analisis.py
 ├── informe.md
 ├── README.md
 ├── requirements.txt
 └── .gitignore
-
+```
 
 ## Instalación
 
 Crear un entorno virtual:
 
-bash
+```bash
 python3 -m venv .venv
-
+```
 
 Activar el entorno:
 
-bash
+```bash
 source .venv/bin/activate
-
+```
 
 Instalar las dependencias:
 
-bash
+```bash
 pip install -r requirements.txt
-
+```
 
 ## Ejecución
 
 Ejecutar el análisis:
 
-bash
+```bash
 python analisis.py
+```
 
-
-El programa calcula los resultados directamente a partir del CSV.
+El programa calcula los resultados directamente a partir del CSV y muestra en la terminal la cantidad de registros, sensores distintos, temperaturas promedio, temperatura máxima y las alertas detectadas.
 
 También genera el archivo:
 
 resultados/alertas.csv
 
 Este archivo conserva las columnas originales y contiene las lecturas con temperatura mayor que 85 °C.
+
+## Reproducibilidad
+
+El proyecto fue probado desde una copia nueva clonada del repositorio. Se creó un entorno virtual nuevo, se instalaron las dependencias mediante requirements.txt y se ejecutó nuevamente analisis.py.
+
+La evidencia de esta prueba se encuentra en:
+
+evidencias/reproducibilidad.png
